@@ -1,14 +1,9 @@
 var seed = Math.random();
 var seedStack = [seed];
-var debug = false;
-var debugSeedPos = 0;
-var debugSeeds = [0.3381843762807184];
-var debugSeed = 1.9767883843490351;
-var debugSeed = 1.5988863916841742;
 var debugSeed = 1.1596787388606669;
 
 function nextSeed() {
-	if (debug) {
+	if (DEBUG) {
 		return debugSeed++;
 	}
 	var next = ++seed;

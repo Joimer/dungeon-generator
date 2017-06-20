@@ -1,3 +1,5 @@
+const DEBUG = false;
+
 var Square = {
     FILLED: 1,
     EMPTY: 0
@@ -9,10 +11,10 @@ var Color = {
 };
  
 function log (m) {
-	if (debug) {
-    	document.getElementById('log').innerHTML += "<br />" + m;
+    if (DEBUG) {
+        document.getElementById('log').innerHTML += "<br />" + m;
     } else {
-    	console.log(m);
+        console.log(m);
     }
 }
 
@@ -25,46 +27,55 @@ function fillCanvas(context) {
 
 var Floor = (function() {
 
-	function Floor(width, height) {
-		this.width = width;
-		this.height = height;
-		this.makeMap();
-	}
+    function Floor(width, height) {
+        this.width = width;
+        this.height = height;
+        this.makeMap();
+        this.boss = {x: 0, y: 0};
+    }
 
-	Floor.prototype.makeMap = function () {
-		this.map = [[]];
-	    for (var i = 0; i < this.width; i++) {
-	        this.map[i] = [];
-	        for (var j = 0; j < this.height; j++) {
-	            this.map[i][j] = Square.FILLED;
-	        }
-	    }
-	};
+    Floor.prototype.makeMap = function () {
+        this.map = [[]];
+        for (var i = 0; i < this.width; i++) {
+            this.map[i] = [];
+            for (var j = 0; j < this.height; j++) {
+                this.map[i][j] = Square.FILLED;
+            }
+        }
+    };
 
-	Floor.prototype.length = function () {
-		return this.map.length;
-	};
+    Floor.prototype.length = function () {
+        return this.map.length;
+    };
 
-	Floor.prototype.rowLength = function () {
-		return this.map[0].length;
-	};
+    Floor.prototype.rowLength = function () {
+        return this.map[0].length;
+    };
 
-	Floor.prototype.getSquare = function (x, y) {
-		return this.map[x][y];
-	};
+    Floor.prototype.getSquare = function (x, y) {
+        return this.map[x][y];
+    };
 
-	Floor.prototype.isEdge = function (x, y) {
-		return x === 0 || x === this.length() -1 || y === 0 || y === this.rowLength() -1;
-	};
+    Floor.prototype.isEdge = function (x, y) {
+        return x === 0 || x === this.length() -1 || y === 0 || y === this.rowLength() -1;
+    };
 
-	Floor.prototype.setSquare = function (x, y, squareType) {
-		if (this.isEdge(x, y)) {
-			squareType = Square.FILLED;
-		}
-		this.map[x][y] = squareType;
-	};
+    Floor.prototype.setSquare = function (x, y, squareType) {
+        if (this.isEdge(x, y)) {
+            squareType = Square.FILLED;
+        }
+        this.map[x][y] = squareType;
+    };
 
-	return Floor;
+    Floor.prototype.setBossPos = function (x, y) {
+        this.boss = {x: x, y: y};
+    };
+
+    Floor.prototype.getBossPos = function () {
+        return this.boss;
+    };
+
+    return Floor;
 })();
  
 var Room = (function() {
@@ -88,59 +99,42 @@ var Room = (function() {
     };
 
     Room.prototype.getNorthExit = function () {
-    	return {
-    		x: this.x + Math.floor(this.width / 2),
-    		y: this.y
-    	};
+        return {
+            x: this.x + Math.floor(this.width / 2),
+            y: this.y
+        };
     };
 
     Room.prototype.getSouthExit = function () {
-    	return {
-    		x: this.x + Math.floor(this.width / 2),
-    		y: this.y + this.height
-    	};
+        return {
+            x: this.x + Math.floor(this.width / 2),
+            y: this.y + this.height
+        };
     };
 
     Room.prototype.getEastExit = function () {
-    	return {
-    		x: this.x + this.width,
-    		y: this.y + Math.floor(this.height / 2)
-    	};
+        return {
+            x: this.x + this.width,
+            y: this.y + Math.floor(this.height / 2)
+        };
     };
 
     Room.prototype.getWestExit = function () {
-    	return {
-    		x: this.x,
-    		y: this.y + Math.floor(this.height / 2)
-    	};
+        return {
+            x: this.x,
+            y: this.y + Math.floor(this.height / 2)
+        };
     };
 
     Room.prototype.getCenter = function () {
-    	return {
-    		x: this.x + Math.ceil(this.width / 2),
-    		y: this.y + Math.ceil(this.height / 2)
-    	};
+        return {
+            x: this.x + Math.ceil(this.width / 2),
+            y: this.y + Math.ceil(this.height / 2)
+        };
     };
  
     return Room;
 })();
- 
-function renderCanvas(context, map, squareSize, rooms) {
-    for (var i = 0; i < map.length(); i++) {
-        for (var j = 0; j < map.rowLength(); j++) {
-            context.beginPath();
-            context.rect(i * squareSize, j * squareSize, squareSize, squareSize);
-            context.fillStyle = (map.getSquare(i, j) === Square.FILLED) ? Color.ROCK : Color.GROUND;
-            context.fill();
-            context.lineWidth = 1;
-            context.strokeStyle = 'black';
-            context.stroke();
-            context.fillStyle = "#333";
-	        context.font = "12px Arial";
-	        context.fillText(i + ',' + j, i * squareSize + 5, j * squareSize + 15);
-        }
-    }
-}
  
 function createRooms(map, numRoomTries, rooms) {
     for (var i = 0; i < numRoomTries; i++) {
@@ -179,13 +173,21 @@ function createRooms(map, numRoomTries, rooms) {
  
     log("Generated " + rooms.length + " rooms.");
 }
- 
-function makePaths(map, rooms) {
+
+function sortRooms(rooms) {
     rooms.sort(function (a, b) {
         return (a.x + a.y > b.x + b.y)? 1 : -1;
     });
- 	for (var i = 0; i < rooms.length - 1; i++) {
-    	makePath(map, rooms[i], rooms[i+1]);
+}
+
+function chooseBossRoom(map, rooms) {
+    var center = rooms[rooms.length - 1].getCenter();
+    map.setBossPos(center.x, center.y);
+}
+ 
+function makePaths(map, rooms) {
+    for (var i = 0; i < rooms.length - 1; i++) {
+        makePath(map, rooms[i], rooms[i+1]);
     }
 }
 
@@ -205,67 +207,67 @@ function makePath(map, first, second) {
         var entryPoint = second.getNorthExit();
         startHorizontal = false;
     } else {
-    	var way = first.getEastExit();
+        var way = first.getEastExit();
         var entryPoint = second.getWestExit();
     }
 
     log("Desde " + way.x + "," + way.y + " a " + entryPoint.x + "," + entryPoint.y + ".");
 
     if (startHorizontal) {
-	    if (way.x <= entryPoint.x) {
-			advancePathEast(map, way, entryPoint);
-		} else {
-			advancePathWest(map, way, entryPoint);
-		}
-	    if (way.y <= entryPoint.y) {
-	    	advancePathNorth(map, way, entryPoint);
-	    } else {
-	    	advancePathSouth(map, way, entryPoint);
-	    }
-	} else {
-		if (way.y <= entryPoint.y) {
-	    	advancePathNorth(map, way, entryPoint);
-	    } else {
-	    	advancePathSouth(map, way, entryPoint);
-	    }
-		if (way.x <= entryPoint.x) {
-			advancePathEast(map, way, entryPoint);
-		} else {
-			advancePathWest(map, way, entryPoint);
-		}
-	}
+        if (way.x <= entryPoint.x) {
+            advancePathEast(map, way, entryPoint);
+        } else {
+            advancePathWest(map, way, entryPoint);
+        }
+        if (way.y <= entryPoint.y) {
+            advancePathNorth(map, way, entryPoint);
+        } else {
+            advancePathSouth(map, way, entryPoint);
+        }
+    } else {
+        if (way.y <= entryPoint.y) {
+            advancePathNorth(map, way, entryPoint);
+        } else {
+            advancePathSouth(map, way, entryPoint);
+        }
+        if (way.x <= entryPoint.x) {
+            advancePathEast(map, way, entryPoint);
+        } else {
+            advancePathWest(map, way, entryPoint);
+        }
+    }
 }
 
 function advancePathEast(map, entry, destination) {
-	while (entry.x <= destination.x) {
-		map.setSquare(entry.x, entry.y, Square.EMPTY);
-		log("Vaciando: " + entry.x + "," + entry.y);
-		entry.x++;
-	}
+    while (entry.x <= destination.x) {
+        map.setSquare(entry.x, entry.y, Square.EMPTY);
+        log("Vaciando: " + entry.x + "," + entry.y);
+        entry.x++;
+    }
 }
 
 function advancePathWest(map, entry, destination) {
-	while (entry.x >= destination.x) {
-		map.setSquare(entry.x, entry.y, Square.EMPTY);
-		log("Vaciando: " + entry.x + "," + entry.y);
-		entry.x--;
-	}
+    while (entry.x >= destination.x) {
+        map.setSquare(entry.x, entry.y, Square.EMPTY);
+        log("Vaciando: " + entry.x + "," + entry.y);
+        entry.x--;
+    }
 }
 
 function advancePathNorth(map, entry, destination) {
-	while (entry.y <= destination.y) {
-		map.setSquare(entry.x, entry.y, Square.EMPTY);
-		log("Vaciando: " + entry.x + "," + entry.y);
-		entry.y++;
-	}
+    while (entry.y <= destination.y) {
+        map.setSquare(entry.x, entry.y, Square.EMPTY);
+        log("Vaciando: " + entry.x + "," + entry.y);
+        entry.y++;
+    }
 }
 
 function advancePathSouth(map, entry, destination) {
-	while (entry.y >= destination.y) {
-		map.setSquare(entry.x, entry.y, Square.EMPTY);
-		log("Vaciando: " + entry.x + "," + entry.y);
-		entry.y--;
-	}
+    while (entry.y >= destination.y) {
+        map.setSquare(entry.x, entry.y, Square.EMPTY);
+        log("Vaciando: " + entry.x + "," + entry.y);
+        entry.y--;
+    }
 }
 
 function putRoomsInMap(map, rooms) {
@@ -276,6 +278,30 @@ function putRoomsInMap(map, rooms) {
             }
         }
     }
+}
+
+// Renders the grid on the canvas.
+function renderCanvas(context, map, squareSize, rooms) {
+    for (var i = 0; i < map.length(); i++) {
+        for (var j = 0; j < map.rowLength(); j++) {
+            context.beginPath();
+            context.rect(i * squareSize, j * squareSize, squareSize, squareSize);
+            context.fillStyle = (map.getSquare(i, j) === Square.FILLED) ? Color.ROCK : Color.GROUND;
+            context.fill();
+            context.lineWidth = 1;
+            context.strokeStyle = 'black';
+            context.stroke();
+            context.fillStyle = "#333";
+            context.font = "12px Arial";
+            context.fillText(i + ',' + j, i * squareSize + 5, j * squareSize + 15);
+        }
+    }
+
+    var bossPos = map.getBossPos();
+    context.beginPath();
+    context.arc(bossPos.x * squareSize - squareSize / 2, bossPos.y * squareSize - squareSize / 2, squareSize / 4, 0, 2 * Math.PI, false);
+    context.fillStyle = '#F22';
+    context.fill();
 }
  
 // Just for debugging purposes
@@ -306,9 +332,12 @@ var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 canvas.width = width;
 canvas.height = height;
- 
+
+// Get everything done
 fillCanvas(context);
 createRooms(map, numRoomTries, rooms);
+sortRooms(rooms);
+chooseBossRoom(map, rooms);
 putRoomsInMap(map, rooms);
 makePaths(map, rooms);
 renderCanvas(context, map, squareSize, rooms);
