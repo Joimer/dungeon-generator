@@ -166,6 +166,12 @@ function advancePathSouth(map, entry, destination) {
         entry.y--;
     }
 }
+
+function setSquareInMap(map, x, y, square, change) {
+    map.setSquare(x, y, Square.EMPTY);
+    log("Vaciando: " + x + "," + y);
+    entry += change;
+}
  
 function putRoomsInMap(map, rooms) {
     for (var room of rooms) {
@@ -178,16 +184,16 @@ function putRoomsInMap(map, rooms) {
 }
  
 function chooseWalls(map, rooms) {
-    for (var i = 0; i < map.length(); i++) {
-        for (var j = 0; j < map.rowLength(); j++) {
-            var northwest = map.getSquare(i-1, j-1);
-            var north = map.getSquare(i, j-1);
-            var northeast = map.getSquare(i+1, j-1);
-            var west = map.getSquare(i-1, j);
-            var east = map.getSquare(i+1, j);
-            var southwest = map.getSquare(i-1, j+1);
-            var south = map.getSquare(i, j+1);
-            var southeast = map.getSquare(i+1, j+1);
+    for (var x = 0; x < map.length(); x++) {
+        for (var y = 0; y < map.rowLength(); y++) {
+            var northwest = map.getSquare(x-1, y-1);
+            var west = map.getSquare(x-1, y);
+            var north = map.getSquare(x, y-1);
+            var northeast = map.getSquare(x+1, y-1);
+            var east = map.getSquare(x+1, y);
+            var southwest = map.getSquare(x-1, y+1);
+            var south = map.getSquare(x, y+1);
+            var southeast = map.getSquare(x+1, y+1);
         }
     }
 }

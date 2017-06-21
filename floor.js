@@ -26,6 +26,12 @@ var Floor = (function() {
     };
  
     Floor.prototype.getSquare = function (x, y) {
+        if (!this.map[x]) {
+            return false;
+        }
+        if (!this.map[x][y]) {
+            return false;
+        }
         return this.map[x][y];
     };
  
