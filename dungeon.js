@@ -1,21 +1,5 @@
 const DEBUG = false;
  
-var Square = {
-    FILLED: 1,
-    EMPTY: 0,
-    WALL_NORTH: 2,
-    WALL_SOUTH: 3,
-    WALL_EAST: 4,
-    WALL_WEST: 5,
-    ISOLATED_FILLED: 6,
-    CORNER_BOTTOMRIGHT: 7,
-    CORNER_BOTTOMLEFT: 8,
-    CORNER_TOPRIGHT: 9,
-    CORNER_TOPLEFT: 10,
-    SURROUNDED_BUTEAST: 11,
-    SURROUDNED_BUTWEST: 12
-};
- 
 var Color = {
     ROCK: '#A87',
     GROUND: '#FCB',
@@ -166,12 +150,6 @@ function advancePathSouth(map, entry, destination) {
         entry.y--;
     }
 }
-
-function setSquareInMap(map, x, y, square, change) {
-    map.setSquare(x, y, Square.EMPTY);
-    log("Vaciando: " + x + "," + y);
-    entry += change;
-}
  
 function putRoomsInMap(map, rooms) {
     for (var room of rooms) {
@@ -186,14 +164,118 @@ function putRoomsInMap(map, rooms) {
 function chooseWalls(map, rooms) {
     for (var x = 0; x < map.length(); x++) {
         for (var y = 0; y < map.rowLength(); y++) {
-            var northwest = map.getSquare(x-1, y-1);
-            var west = map.getSquare(x-1, y);
-            var north = map.getSquare(x, y-1);
-            var northeast = map.getSquare(x+1, y-1);
-            var east = map.getSquare(x+1, y);
-            var southwest = map.getSquare(x-1, y+1);
-            var south = map.getSquare(x, y+1);
-            var southeast = map.getSquare(x+1, y+1);
+            if (map.getSquare(x, y) === Square.EMPTY) {
+                continue;
+            }
+            var mask = 0;
+            // northwest
+            if (!map.isEmpty(x-1, y-1)) {
+                mask |= 1;
+            }
+            // north
+            if (!map.isEmpty(x, y-1)) {
+                mask |= 2;
+            }
+            // northeast
+            if (!map.isEmpty(x+1, y-1)) {
+                mask |= 4;
+            }
+            // west
+            if (!map.isEmpty(x-1, y)) {
+                mask |= 8;
+            }
+            // east
+            if (!map.isEmpty(x+1, y)) {
+                mask |= 16;
+            }
+            // southwest
+            if (!map.isEmpty(x-1, y+1)) {
+                mask |= 32;
+            }
+            // south
+            if (!map.isEmpty(x, y+1)) {
+                mask |= 64;
+            }
+            // southeast
+            if (!map.isEmpty(x+1, y+1)) {
+                mask |= 128;
+            }
+
+            if (mask === 255) {
+                var type = Square.FILLED;
+            }
+
+            // TODO: Remove
+            if (mask < 255) {
+                var type = Square.ISOLATED_FILLED;
+            }
+
+            /* WIP
+            if (mask === 255) {
+                var type = Square.FILLED;
+            }
+
+            if (mask === 0 || ((2 & mask) !== 0 && (8 & mask) !== 0 && (16 & mask) !== 0 && (64 & mask) !== 0)) {
+                var type = Square.ISOLATED_FILLED;
+            }
+
+            if (mask === 1) {
+                var type = Square.;
+            }
+
+            if (mask === 2) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }
+
+            if (mask === ) {
+                var type = Square.;
+            }*/
+
+            map.setSquare(x, y, type);
         }
     }
 }
