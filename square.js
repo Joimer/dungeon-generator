@@ -1,24 +1,81 @@
-var SquareType = {
-    OUT_OF_BOUNDS: -1,
-    FILLED: 1,
-    EMPTY: 0,
-    ISOLATED_FILLED: 2,
-    BORDER_TOP: 3,
-    BORDER_BOTTOM: 4,
-    BORDER_RIGHT: 5,
-    BORDER_LEFT: 6,
-    BORDER_TOPBOTTOM: 7,
-    BORDER_LEFTRIGHT: 8,
-    CORNER_BOTTOMRIGHT: 9,
-    CORNER_BOTTOMLEFT: 10,
-    CORNER_TOPRIGHT: 11,
-    CORNER_TOPLEFT: 12,
-    DENT_BOTTOMRIGHT: 13,
-    DENT_BOTTOMLEFT: 14,
-    DENT_TOPRIGHT: 15,
-    DENT_TOPLEFT: 16,
-    ONLY_BOTTOM: 17,
-    ONLY_LEFT: 18,
-    ONLY_RIGHT: 19,
-    ONLY_TOP: 1
-};
+var Square = (function() {
+ 
+    function Square(type, mask) {
+        this.type = type;
+        // This integer is gonna be a mask for 8 bits.
+        // Each bit represents a position adjacent to the current square.
+        // Should the bit be set, that means the specified position is occupied by rock, or basically not walkable ground.
+        /**
+         * The mask works as follows:
+         *  _______________
+         * |  1 |  2 |  4  |
+         * |---------------|
+         * | 8  |  X |  16 | 
+         * |---------------|
+         * | 32 | 64 | 128 |
+         * -----------------
+         */
+        this.mask = mask;
+    }
+ 
+    Square.prototype.isIsolated = function () {
+        return this.mask === 0
+        || (
+            (2 & ~mask) !== 0
+            && (8 & ~mask) !== 0
+            && (16 & ~mask) !== 0
+            && (64 & ~mask) !== 0
+        );
+    };
+
+    Square.prototype.isSurrounded = function () {
+        return this.mask = 255;
+    };
+
+    Square.prototype.onlyAdjacentNorth = function () {
+        return (2 & mask) !== 0
+            && (1 & ~mask) !== 0
+            && (4 & ~mask) !== 0
+            && (8 & ~mask) !== 0
+            && (16 & ~mask) !== 0
+            && (64 & ~mask) !== 0;
+    };
+
+    Square.prototype.onlyAdjacentSouth = function () {
+        return (64 & mask) !== 0
+            && (1 & ~mask) !== 0
+            && (4 & ~mask) !== 0
+            && (8 & ~mask) !== 0
+            && (16 & ~mask) !== 0
+            && (2 & ~mask) !== 0;
+    };
+
+    Square.prototype.onlyAdjacentEast = function () {
+        return (16 & mask) !== 0
+            && (1 & ~mask) !== 0
+            && (4 & ~mask) !== 0
+            && (8 & ~mask) !== 0
+            && (2 & ~mask) !== 0
+            && (64 & ~mask) !== 0;
+    };
+
+    Square.prototype.onlyAdjacentWest = function () {
+        return (8 & mask) !== 0
+            && (1 & ~mask) !== 0
+            && (4 & ~mask) !== 0
+            && (2 & ~mask) !== 0
+            && (16 & ~mask) !== 0
+            && (64 & ~mask) !== 0;
+    };
+
+    Square.prototype.wallBorderNorth = function () {
+        return (64 & mask) !== 0
+            && (1 & ~mask) !== 0
+            && (2 & ~mask) !== 0
+            && (4 & ~mask) !== 0
+            && (8 & mask) !== 0
+            && (16 & mask) !== 0;
+    };
+ 
+    return Square;
+})();

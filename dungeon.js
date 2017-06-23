@@ -213,21 +213,22 @@ function chooseWalls(map, rooms) {
             if (!map.isEmpty(x+1, y+1)) {
                 mask |= 128;
             }
+            var square = new Square(type, mask);
 
             // Now, depending on the bits set, we choose the appropriate sprite.
-            if (mask === 255) {
+            if (square.isSurrounded() === 255) {
                 var type = SquareType.FILLED;
             }
 
             // Delete
-            if (mask < 255) {
+            if (square.isSurrounded() < 255) {
                 var type = SquareType.ISOLATED_FILLED;
             }
 
             // A wall that has no adjacent walls to the east, west, north, and south positions.
-            /*if (mask === 0 || ((2 & mask) !== 0 && (8 & mask) !== 0 && (16 & mask) !== 0 && (64 & mask) !== 0)) {
+            if (square.isIsolated()) {
                 var type = SquareType.ISOLATED_FILLED;
-            }*/
+            }
 
             /*if () {
                 var type = SquareType.;
