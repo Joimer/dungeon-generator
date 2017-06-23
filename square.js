@@ -1,4 +1,4 @@
-var Square = {
+var SquareType = {
     OUT_OF_BOUNDS: -1,
     FILLED: 1,
     EMPTY: 0,

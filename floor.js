@@ -12,7 +12,7 @@ var Floor = (function() {
         for (var i = 0; i < this.width; i++) {
             this.map[i] = [];
             for (var j = 0; j < this.height; j++) {
-                this.map[i][j] = Square.FILLED;
+                this.map[i][j] = SquareType.FILLED;
             }
         }
     };
@@ -27,7 +27,7 @@ var Floor = (function() {
  
     Floor.prototype.getSquare = function (x, y) {
         if (typeof this.map[x] === 'undefined' || typeof this.map[x][y] === 'undefined') {
-            return Square.OUT_OF_BOUNDS;
+            return SquareType.OUT_OF_BOUNDS;
         }
         return this.map[x][y];
     };
@@ -38,7 +38,7 @@ var Floor = (function() {
  
     Floor.prototype.setSquare = function (x, y, squareType) {
         if (this.isEdge(x, y)) {
-            squareType = squareType === Square.EMPTY ? Square.FILLED : squareType;
+            squareType = squareType === SquareType.EMPTY ? SquareType.FILLED : squareType;
         }
         this.map[x][y] = squareType;
     };
@@ -53,7 +53,7 @@ var Floor = (function() {
 
     Floor.prototype.isEmpty = function (x, y) {
         var square = this.getSquare(x, y);
-        return square === Square.EMPTY;
+        return square === SquareType.EMPTY;
     };
  
     return Floor;

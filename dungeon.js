@@ -121,7 +121,7 @@ function makePath(map, first, second) {
  
 function advancePathEast(map, entry, destination) {
     while (entry.x <= destination.x) {
-        map.setSquare(entry.x, entry.y, Square.EMPTY);
+        map.setSquare(entry.x, entry.y, SquareType.EMPTY);
         log("Vaciando: " + entry.x + "," + entry.y);
         entry.x++;
     }
@@ -129,7 +129,7 @@ function advancePathEast(map, entry, destination) {
  
 function advancePathWest(map, entry, destination) {
     while (entry.x >= destination.x) {
-        map.setSquare(entry.x, entry.y, Square.EMPTY);
+        map.setSquare(entry.x, entry.y, SquareType.EMPTY);
         log("Vaciando: " + entry.x + "," + entry.y);
         entry.x--;
     }
@@ -137,7 +137,7 @@ function advancePathWest(map, entry, destination) {
  
 function advancePathNorth(map, entry, destination) {
     while (entry.y <= destination.y) {
-        map.setSquare(entry.x, entry.y, Square.EMPTY);
+        map.setSquare(entry.x, entry.y, SquareType.EMPTY);
         log("Vaciando: " + entry.x + "," + entry.y);
         entry.y++;
     }
@@ -145,7 +145,7 @@ function advancePathNorth(map, entry, destination) {
  
 function advancePathSouth(map, entry, destination) {
     while (entry.y >= destination.y) {
-        map.setSquare(entry.x, entry.y, Square.EMPTY);
+        map.setSquare(entry.x, entry.y, SquareType.EMPTY);
         log("Vaciando: " + entry.x + "," + entry.y);
         entry.y--;
     }
@@ -155,7 +155,7 @@ function putRoomsInMap(map, rooms) {
     for (var room of rooms) {
         for (var i = room.x; i < room.x + room.width; i++) {
             for (var j = room.y; j < room.y + room.height; j++) {
-                map.setSquare(i, j, Square.EMPTY);
+                map.setSquare(i, j, SquareType.EMPTY);
             }
         }
     }
@@ -164,9 +164,22 @@ function putRoomsInMap(map, rooms) {
 function chooseWalls(map, rooms) {
     for (var x = 0; x < map.length(); x++) {
         for (var y = 0; y < map.rowLength(); y++) {
-            if (map.getSquare(x, y) === Square.EMPTY) {
+            if (map.getSquare(x, y) === SquareType.EMPTY) {
                 continue;
             }
+            // This integer is gonna be a mask for 8 bits.
+            // Each bit represents a position adjacent to the current square.
+            // Should the bit be set, that means the specified position is occupied by rock, or basically not walkable ground.
+            /**
+             * The mask works as follows:
+             *  _______________
+             * |  1 |  2 |  4  |
+             * |---------------|
+             * | 8  |  X |  16 | 
+             * |---------------|
+             * | 32 | 64 | 128 |
+             * -----------------
+             */
             var mask = 0;
             // northwest
             if (!map.isEmpty(x-1, y-1)) {
@@ -201,78 +214,75 @@ function chooseWalls(map, rooms) {
                 mask |= 128;
             }
 
+            // Now, depending on the bits set, we choose the appropriate sprite.
             if (mask === 255) {
-                var type = Square.FILLED;
+                var type = SquareType.FILLED;
             }
 
-            // TODO: Remove
+            // Delete
             if (mask < 255) {
-                var type = Square.ISOLATED_FILLED;
+                var type = SquareType.ISOLATED_FILLED;
             }
 
-            /* WIP
-            if (mask === 255) {
-                var type = Square.FILLED;
+            // A wall that has no adjacent walls to the east, west, north, and south positions.
+            /*if (mask === 0 || ((2 & mask) !== 0 && (8 & mask) !== 0 && (16 & mask) !== 0 && (64 & mask) !== 0)) {
+                var type = SquareType.ISOLATED_FILLED;
+            }*/
+
+            /*if () {
+                var type = SquareType.;
             }
 
-            if (mask === 0 || ((2 & mask) !== 0 && (8 & mask) !== 0 && (16 & mask) !== 0 && (64 & mask) !== 0)) {
-                var type = Square.ISOLATED_FILLED;
-            }
-
-            if (mask === 1) {
-                var type = Square.;
-            }
-
-            if (mask === 2) {
-                var type = Square.;
+            if () {
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }
 
             if (mask === ) {
-                var type = Square.;
+                var type = SquareType.;
             }*/
 
             map.setSquare(x, y, type);
@@ -288,9 +298,9 @@ function renderCanvas(context, map, squareSize, rooms) {
             context.rect(i * squareSize, j * squareSize, squareSize, squareSize);
             var color;
             var square = map.getSquare(i, j);
-            if (square === Square.FILLED) {
+            if (square === SquareType.FILLED) {
                 color = Color.ROCK;
-            } else if (square === Square.EMPTY) {
+            } else if (square === SquareType.EMPTY) {
                 color = Color.GROUND;
             } else {
                 color = Color.WALL;
