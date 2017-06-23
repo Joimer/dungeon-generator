@@ -12,11 +12,11 @@ function nextSeed() {
 }
 
 function rand(n, m) {
-    if (!m) return Math.floor(random(seed) * n);
-    return Math.floor(n + (1 + m - n) * random(seed));
+    if (!m) return Math.floor(random() * n);
+    return Math.floor(n + (1 + m - n) * random());
 }
 
-function random(seed) {
+function random() {
 	var seed = nextSeed();
     var x = Math.sin(seed) * 10000;
     return x - Math.floor(x);

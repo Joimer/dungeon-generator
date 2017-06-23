@@ -21,10 +21,10 @@ var Square = (function() {
     Square.prototype.isIsolated = function () {
         return this.mask === 0
         || (
-            (2 & ~mask) !== 0
-            && (8 & ~mask) !== 0
-            && (16 & ~mask) !== 0
-            && (64 & ~mask) !== 0
+            (2 & ~this.mask) !== 0
+            && (8 & ~this.mask) !== 0
+            && (16 & ~this.mask) !== 0
+            && (64 & ~this.mask) !== 0
         );
     };
 
@@ -33,48 +33,48 @@ var Square = (function() {
     };
 
     Square.prototype.onlyAdjacentNorth = function () {
-        return (2 & mask) !== 0
-            && (1 & ~mask) !== 0
-            && (4 & ~mask) !== 0
-            && (8 & ~mask) !== 0
-            && (16 & ~mask) !== 0
-            && (64 & ~mask) !== 0;
+        return (2 & this.mask) !== 0
+            && (1 & ~this.mask) !== 0
+            && (4 & ~this.mask) !== 0
+            && (8 & ~this.mask) !== 0
+            && (16 & ~this.mask) !== 0
+            && (64 & ~this.mask) !== 0;
     };
 
     Square.prototype.onlyAdjacentSouth = function () {
-        return (64 & mask) !== 0
-            && (1 & ~mask) !== 0
-            && (4 & ~mask) !== 0
-            && (8 & ~mask) !== 0
-            && (16 & ~mask) !== 0
-            && (2 & ~mask) !== 0;
+        return (64 & this.mask) !== 0
+            && (1 & ~this.mask) !== 0
+            && (4 & ~this.mask) !== 0
+            && (8 & ~this.mask) !== 0
+            && (16 & ~this.mask) !== 0
+            && (2 & ~this.mask) !== 0;
     };
 
     Square.prototype.onlyAdjacentEast = function () {
-        return (16 & mask) !== 0
-            && (1 & ~mask) !== 0
-            && (4 & ~mask) !== 0
-            && (8 & ~mask) !== 0
-            && (2 & ~mask) !== 0
-            && (64 & ~mask) !== 0;
+        return (16 & this.mask) !== 0
+            && (1 & ~this.mask) !== 0
+            && (4 & ~this.mask) !== 0
+            && (8 & ~this.mask) !== 0
+            && (2 & ~this.mask) !== 0
+            && (64 & ~this.mask) !== 0;
     };
 
     Square.prototype.onlyAdjacentWest = function () {
-        return (8 & mask) !== 0
-            && (1 & ~mask) !== 0
-            && (4 & ~mask) !== 0
-            && (2 & ~mask) !== 0
-            && (16 & ~mask) !== 0
-            && (64 & ~mask) !== 0;
+        return (8 & this.mask) !== 0
+            && (1 & ~this.mask) !== 0
+            && (4 & ~this.mask) !== 0
+            && (2 & ~this.mask) !== 0
+            && (16 & ~this.mask) !== 0
+            && (64 & ~this.mask) !== 0;
     };
 
     Square.prototype.wallBorderNorth = function () {
-        return (64 & mask) !== 0
-            && (1 & ~mask) !== 0
-            && (2 & ~mask) !== 0
-            && (4 & ~mask) !== 0
-            && (8 & mask) !== 0
-            && (16 & mask) !== 0;
+        return (64 & this.mask) !== 0
+            && (1 & ~this.mask) !== 0
+            && (2 & ~this.mask) !== 0
+            && (4 & ~this.mask) !== 0
+            && (8 & this.mask) !== 0
+            && (16 & this.mask) !== 0;
     };
  
     return Square;
