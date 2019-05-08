@@ -1,4 +1,4 @@
-var SquareType = {
+const SquareType = {
     OUT_OF_BOUNDS: -1,
     FILLED: 1,
     EMPTY: 0,

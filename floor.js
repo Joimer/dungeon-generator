@@ -37,6 +37,9 @@ var Floor = (function() {
     };
  
     Floor.prototype.setSquare = function (x, y, squareType) {
+        // This shouldn't happen, but:
+        // If a square is empty on an edge, we fill it,
+        // so there's a filled square on all the edges.
         if (this.isEdge(x, y)) {
             squareType = squareType === SquareType.EMPTY ? SquareType.FILLED : squareType;
         }

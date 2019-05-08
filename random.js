@@ -1,12 +1,12 @@
-var seed = Math.random();
-var seedStack = [seed];
-var debugSeed = 1.1596787388606669;
+let seed = Math.random();
+let seedStack = [seed];
+let debugSeed = 1.1596787388606669;
 
 function nextSeed() {
 	if (DEBUG) {
 		return debugSeed++;
 	}
-	var next = ++seed;
+	let next = ++seed;
 	seedStack.push(next);
 	return next;
 }
@@ -17,7 +17,7 @@ function rand(n, m) {
 }
 
 function random() {
-	var seed = nextSeed();
-    var x = Math.sin(seed) * 10000;
+	let seed = nextSeed();
+    let x = Math.sin(seed) * 10000;
     return x - Math.floor(x);
 }

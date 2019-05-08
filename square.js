@@ -2,6 +2,7 @@ var Square = (function() {
  
     function Square(type, mask) {
         this.type = type;
+
         // This integer is gonna be a mask for 8 bits.
         // Each bit represents a position adjacent to the current square.
         // Should the bit be set, that means the specified position is occupied by rock, or basically not walkable ground.
@@ -10,14 +11,14 @@ var Square = (function() {
          *  _______________
          * |  1 |  2 |  4  |
          * |---------------|
-         * | 8  |  X |  16 | 
+         * | 8  |  X |  16 |
          * |---------------|
          * | 32 | 64 | 128 |
          * -----------------
          */
         this.mask = mask;
     }
- 
+
     Square.prototype.isIsolated = function () {
         return this.mask === 0
         || (
@@ -29,7 +30,7 @@ var Square = (function() {
     };
 
     Square.prototype.isSurrounded = function () {
-        return this.mask = 255;
+        return this.mask === 255;
     };
 
     Square.prototype.onlyAdjacentNorth = function () {
