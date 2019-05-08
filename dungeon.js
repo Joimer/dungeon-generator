@@ -43,7 +43,7 @@ function createRooms(map, numRoomTries, rooms) {
         // After that, iterate previously created rooms to find if it's overlapping with anything.
         let room = new Room(x, y, width, height);
         let overlaps = false;
-        for (var roomadded of rooms) {
+        for (let roomadded of rooms) {
             if (room.overlaps(roomadded)) {
                 overlaps = true;
                 break;
@@ -76,14 +76,14 @@ function sortRooms(rooms) {
  // This is agnostic to the ordering process itself, so the process may change.
  // The current behaviour now is most likely the room more to the bottom right.
 function chooseBossRoom(map, rooms) {
-    var center = rooms[rooms.length - 1].getCenter();
+    let center = rooms[rooms.length - 1].getCenter();
     map.setBossPos(center.x, center.y);
 }
 
 // For every room, create a path to the next room.
 // This connects all rooms in single paths from one to another.
 function makePaths(map, rooms) {
-    for (var i = 0; i < rooms.length - 1; i++) {
+    for (let i = 0; i < rooms.length - 1; i++) {
         makePath(map, rooms[i], rooms[i+1]);
     }
 }
@@ -176,9 +176,9 @@ function carveSquare(x, y) {
 
 // Carve the rooms in the map, setting all the squares that a room contain empty.
 function putRoomsInMap(map, rooms) {
-    for (var room of rooms) {
-        for (var i = room.x; i < room.x + room.width; i++) {
-            for (var j = room.y; j < room.y + room.height; j++) {
+    for (let room of rooms) {
+        for (let i = room.x; i < room.x + room.width; i++) {
+            for (let j = room.y; j < room.y + room.height; j++) {
                 map.setSquare(i, j, SquareType.EMPTY);
             }
         }
@@ -291,7 +291,7 @@ function renderCanvas(context, map, squareSize, rooms) {
 // Just for debugging purposes
 function markRooms(rooms, context) {
     let i = 1;
-    for (var room of rooms) {
+    for (let room of rooms) {
         context.font = "32px Arial";
         context.fillStyle = "#000";
         context.fillText(i.toString(), (room.x + room.width / 2) * squareSize, (room.y + room.height / 2) * squareSize);

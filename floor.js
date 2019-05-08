@@ -1,42 +1,42 @@
-var Floor = (function() {
+class Floor {
  
-    function Floor(width, height) {
+    constructor(width, height) {
         this.width = width;
         this.height = height;
         this.makeMap();
         this.boss = {x: 0, y: 0};
     }
  
-    Floor.prototype.makeMap = function () {
+    makeMap() {
         this.map = [[]];
-        for (var i = 0; i < this.width; i++) {
+        for (let i = 0; i < this.width; i++) {
             this.map[i] = [];
-            for (var j = 0; j < this.height; j++) {
+            for (let j = 0; j < this.height; j++) {
                 this.map[i][j] = SquareType.FILLED;
             }
         }
-    };
+    }
  
-    Floor.prototype.length = function () {
+    length() {
         return this.map.length;
-    };
+    }
  
-    Floor.prototype.rowLength = function () {
+    rowLength() {
         return this.map[0].length;
-    };
+    }
  
-    Floor.prototype.getSquare = function (x, y) {
+    getSquare(x, y) {
         if (typeof this.map[x] === 'undefined' || typeof this.map[x][y] === 'undefined') {
             return SquareType.OUT_OF_BOUNDS;
         }
         return this.map[x][y];
-    };
+    }
  
-    Floor.prototype.isEdge = function (x, y) {
+    isEdge(x, y) {
         return x === 0 || x === this.length() -1 || y === 0 || y === this.rowLength() -1;
-    };
+    }
  
-    Floor.prototype.setSquare = function (x, y, squareType) {
+    setSquare(x, y, squareType) {
         // This shouldn't happen, but:
         // If a square is empty on an edge, we fill it,
         // so there's a filled square on all the edges.
@@ -44,20 +44,18 @@ var Floor = (function() {
             squareType = squareType === SquareType.EMPTY ? SquareType.FILLED : squareType;
         }
         this.map[x][y] = squareType;
-    };
+    }
  
-    Floor.prototype.setBossPos = function (x, y) {
+    setBossPos(x, y) {
         this.boss = {x: x, y: y};
-    };
+    }
  
-    Floor.prototype.getBossPos = function () {
+    getBossPos() {
         return this.boss;
-    };
+    }
 
-    Floor.prototype.isEmpty = function (x, y) {
-        var square = this.getSquare(x, y);
+    isEmpty(x, y) {
+        let square = this.getSquare(x, y);
         return square === SquareType.EMPTY;
-    };
- 
-    return Floor;
-})();
+    }
+}

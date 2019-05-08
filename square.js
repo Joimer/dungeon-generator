@@ -1,6 +1,6 @@
-var Square = (function() {
+class Square {
  
-    function Square(type, mask) {
+    constructor(type, mask) {
         this.type = type;
 
         // This integer is gonna be a mask for 8 bits.
@@ -19,7 +19,7 @@ var Square = (function() {
         this.mask = mask;
     }
 
-    Square.prototype.isIsolated = function () {
+    isIsolated() {
         return this.mask === 0
         || (
             (2 & ~this.mask) !== 0
@@ -27,56 +27,54 @@ var Square = (function() {
             && (16 & ~this.mask) !== 0
             && (64 & ~this.mask) !== 0
         );
-    };
+    }
 
-    Square.prototype.isSurrounded = function () {
+    isSurrounded() {
         return this.mask === 255;
-    };
+    }
 
-    Square.prototype.onlyAdjacentNorth = function () {
+    onlyAdjacentNorth() {
         return (2 & this.mask) !== 0
             && (1 & ~this.mask) !== 0
             && (4 & ~this.mask) !== 0
             && (8 & ~this.mask) !== 0
             && (16 & ~this.mask) !== 0
             && (64 & ~this.mask) !== 0;
-    };
+    }
 
-    Square.prototype.onlyAdjacentSouth = function () {
+    onlyAdjacentSouth() {
         return (64 & this.mask) !== 0
             && (1 & ~this.mask) !== 0
             && (4 & ~this.mask) !== 0
             && (8 & ~this.mask) !== 0
             && (16 & ~this.mask) !== 0
             && (2 & ~this.mask) !== 0;
-    };
+    }
 
-    Square.prototype.onlyAdjacentEast = function () {
+    onlyAdjacentEast() {
         return (16 & this.mask) !== 0
             && (1 & ~this.mask) !== 0
             && (4 & ~this.mask) !== 0
             && (8 & ~this.mask) !== 0
             && (2 & ~this.mask) !== 0
             && (64 & ~this.mask) !== 0;
-    };
+    }
 
-    Square.prototype.onlyAdjacentWest = function () {
+    onlyAdjacentWest() {
         return (8 & this.mask) !== 0
             && (1 & ~this.mask) !== 0
             && (4 & ~this.mask) !== 0
             && (2 & ~this.mask) !== 0
             && (16 & ~this.mask) !== 0
             && (64 & ~this.mask) !== 0;
-    };
+    }
 
-    Square.prototype.wallBorderNorth = function () {
+    wallBorderNorth() {
         return (64 & this.mask) !== 0
             && (1 & ~this.mask) !== 0
             && (2 & ~this.mask) !== 0
             && (4 & ~this.mask) !== 0
             && (8 & this.mask) !== 0
             && (16 & this.mask) !== 0;
-    };
- 
-    return Square;
-})();
+    }
+}

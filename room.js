@@ -1,57 +1,55 @@
-var Room = (function() {
+class Room {
  
-    function Room(x, y, width, height) {
+    constructor(x, y, width, height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
     }
  
-    Room.prototype.overlaps = function (room) {
+    overlaps(room) {
         return this.x < room.x + room.width
         && this.x + this.width > room.x
         && this.y < room.y + room.height
         && this.height + this.y > room.y;
-    };
+    }
  
-    Room.prototype.toString = function() {
+    toString() {
         return 'x: ' + this.x + ', y: ' + this.y + ', width: ' + this.width + ', height: ' + this.height;
-    };
+    }
  
-    Room.prototype.getNorthExit = function () {
+    getNorthExit() {
         return {
             x: this.x + Math.floor(this.width / 2),
             y: this.y
         };
-    };
+    }
  
-    Room.prototype.getSouthExit = function () {
+    getSouthExit() {
         return {
             x: this.x + Math.floor(this.width / 2),
             y: this.y + this.height
         };
-    };
+    }
  
-    Room.prototype.getEastExit = function () {
+    getEastExit() {
         return {
             x: this.x + this.width,
             y: this.y + Math.floor(this.height / 2)
         };
-    };
+    }
  
-    Room.prototype.getWestExit = function () {
+    getWestExit() {
         return {
             x: this.x,
             y: this.y + Math.floor(this.height / 2)
         };
-    };
+    }
  
-    Room.prototype.getCenter = function () {
+    getCenter() {
         return {
             x: this.x + Math.ceil(this.width / 2),
             y: this.y + Math.ceil(this.height / 2)
         };
-    };
- 
-    return Room;
-})();
+    }
+}
