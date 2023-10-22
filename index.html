@@ -6,16 +6,22 @@
  
     <body>
         <div id="content" style="float: left; width: 45%;">
-            <canvas id="canvas">
-            </canvas>
+            <canvas id="canvas"></canvas>
         </div>
  
-        <div id="log" style="float:right; width: 45%;"></div>
+        <div id="data" style="float:right; width: 45%;">
+            <button id="generate">Generate</button><br />
+            <strong>HP: </strong> <span id="hp"></span><br />
+            <strong>Level: </strong> <span id="lvl"></span><br />
+            <strong>Experience: </strong> <span id="exp"></span><br />
+            <strong>Floor: </strong> <span id="floor"></span><br />
+            <strong>Turn: </strong> <span id="turn"></span><br />
+            <button id="up">Up</button><br />
+            <button id="left">Left</button> <button id="right">Right</button><br />
+            <button id="down">Down</button><br />
+            <button id="action">Action</button> or press Z<br />
+            <div id="log"></div>
+        </div>
     </body>
-    <script type="text/javascript" src="square-type.js"></script>
-    <script type="text/javascript" src="square.js"></script>
-    <script type="text/javascript" src="room.js"></script>
-    <script type="text/javascript" src="floor.js"></script>
-    <script type="text/javascript" src="random.js"></script>
-    <script type="text/javascript" src="dungeon.js"></script>
+    <script type="module" src="./index.mjs"></script>
 </html>
